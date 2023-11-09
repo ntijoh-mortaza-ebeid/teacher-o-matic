@@ -1,9 +1,9 @@
 .vscode
 
-node_modules
+frontend/node_modules
 
-server/Gemfile.lock
+backend/Gemfile.lock
 
-server/db/assessments.db
+backend/db/assessments.db
 
 .DS_Store
