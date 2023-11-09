@@ -1,0 +1,9 @@
+.vscode
+
+node_modules
+
+server/Gemfile.lock
+
+server/db/assessments.db
+
+.DS_Store
