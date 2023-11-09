@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, Ref } from "vue";
 import router from "../router.ts";
 
-const searchedUser = ref("");
+const searchedUser: Ref<string> = ref("");
 </script>
 
 <template>
@@ -32,6 +32,3 @@ const searchedUser = ref("");
     </div>
   </nav>
 </template>
-
-<style scoped></style>
-../index.ts

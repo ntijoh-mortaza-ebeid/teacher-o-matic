@@ -9,7 +9,6 @@
 <style scoped>
 main {
   display: flex;
-  align-items: center;
   justify-content: center;
 }
 h1 {
