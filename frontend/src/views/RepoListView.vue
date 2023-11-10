@@ -50,8 +50,9 @@ async function loadRepos(user: string): Promise<number | undefined> {
     }
   );
 
+  userFound.value = true;
+  hasRepos.value = true;
   repos.value = userReposFiltered;
-  console.log(repos.value);
 }
 </script>
 
