@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref, Ref } from "vue";
-import router from "../router.ts";
+import router from "../router";
 
 const searchedUser: Ref<string> = ref("");
 </script>

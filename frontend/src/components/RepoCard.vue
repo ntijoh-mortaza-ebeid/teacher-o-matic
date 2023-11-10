@@ -1,5 +1,10 @@
 <script setup lang="ts">
 import { ref, Ref } from "vue";
+import { IManifest } from "../interfaces/IManifest";
+import useAssigemntStore from "../stores/AssignmentStore";
+import router from "../router";
+
+const assignmentStore = useAssigemntStore();
 
 const props = defineProps<{
   name: string;
@@ -9,13 +14,19 @@ const props = defineProps<{
   fetchForksURL: string;
 }>();
 
-const repoHasForks: boolean = props.forksCount > 0;
+let repoHasForks: boolean = props.forksCount > 0;
 const showForksButtonEnabled: Ref<boolean> = ref(repoHasForks);
 let showForksButtonText: string = repoHasForks
   ? "show forks"
   : "no forks found";
 
-async function showForks() {
+router.beforeEach(() => {
+  repoHasForks = props.forksCount > 0;
+  showForksButtonEnabled.value = repoHasForks;
+  showForksButtonText = repoHasForks ? "show forks" : "no forks found";
+});
+
+async function showForks(): Promise<number> {
   const routeToManifest: string = `${props.fetchContentsURL}.manifest.json`;
   const manifestReponse: Response = await fetch(routeToManifest);
   if (!manifestReponse.ok) {
@@ -25,10 +36,12 @@ async function showForks() {
   }
 
   const manifestBase64: string = (await manifestReponse.json()).content;
-  const manifest = JSON.parse(atob(manifestBase64)); // TODO ADD TYPE SAFETY
+  const manifest: IManifest = JSON.parse(atob(manifestBase64));
 
-  console.log(manifest);
-  console.log(props.fetchForksURL);
+  assignmentStore.setManifest(manifest);
+  assignmentStore.setForksURL(props.fetchForksURL);
+
+  return 0;
 }
 </script>
 

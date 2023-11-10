@@ -1,37 +1,29 @@
 import { defineStore } from "pinia";
-
-interface IManifest {
-  assignmentName: string;
-  filePath: string;
-  language: string;
-  functionName: string;
-  functionArity: number;
-  tests: [];
-}
+import { IManifest } from "../interfaces/IManifest";
 
 interface IAssigment {
   fetchForksURL: string;
-  manifest: {};
+  manifest: IManifest;
 }
 
 const useAssigemntStore = defineStore("AssigemntStore", {
   state: () => {
-    return {} as IAssigment;
-  },
-  getters: {
-    fetchForksURL(): string {
-      return this.fetchForksURL;
-    },
-    fetchManifest(): object {
-      return this.manifest;
-    },
+    return { fetchForksURL: "", manifest: {} } as IAssigment;
   },
   actions: {
-    setForksURL(url: string): void {
-      this.fetchForksURL = url;
+    setForksURL(fetchForksURL: string): void {
+      this.fetchForksURL = fetchForksURL;
     },
-    setManifest(manifest: object): void {
+    setManifest(manifest: IManifest): void {
       this.manifest = manifest;
+    },
+  },
+  getters: {
+    getFetchForksURL(): string {
+      return this.fetchForksURL;
+    },
+    getManifest(): IManifest {
+      return this.manifest;
     },
   },
 });

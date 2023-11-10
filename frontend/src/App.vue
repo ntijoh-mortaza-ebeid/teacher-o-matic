@@ -19,5 +19,4 @@ import SearchBar from "./components/SearchBar.vue";
   <router-view></router-view>
 </template>
 
-<style scoped>
-</style>
+<style scoped></style>
