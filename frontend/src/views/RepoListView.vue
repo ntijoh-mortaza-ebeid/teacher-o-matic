@@ -2,6 +2,27 @@
 import router from "../router";
 import { useRoute } from "vue-router";
 import { ref, Ref } from "vue";
+import RepoCard from "../components/RepoCard.vue";
+
+interface IRepo {
+  name: string;
+  link: string;
+  fetchContentsURL: string;
+  forksCount: number;
+  fetchForksURL: string;
+}
+
+interface IGithubApiResponseRepo {
+  contents_url: string;
+  name: string;
+  html_url: string;
+  forks_count: number;
+  forks_url: string;
+}
+
+const repos: Ref<IRepo[]> = ref([]);
+const userFound: Ref<boolean> = ref(true);
+const hasRepos: Ref<boolean> = ref(true);
 
 const route = useRoute();
 let searchedUser: string = route.params.user as string;
@@ -11,10 +32,6 @@ router.beforeEach((to) => {
   searchedUser = to.params.user as string;
   loadRepos(searchedUser);
 });
-
-const repos: Ref<Object[]> = ref([]);
-const userFound: Ref<boolean> = ref(true);
-const hasRepos: Ref<boolean> = ref(true);
 
 async function loadRepos(user: string): Promise<number | undefined> {
   // fetch repos for user
@@ -26,26 +43,20 @@ async function loadRepos(user: string): Promise<number | undefined> {
     return 1;
   }
 
-  const userRepos = await userReposResult.json();
+  const userRepos: IGithubApiResponseRepo[] = await userReposResult.json();
   if (userRepos.length === 0) {
     hasRepos.value = false;
     return 1;
   }
 
-  const userReposFiltered = userRepos.map(
-    (repo: {
-      contents_url: string;
-      name: string;
-      html_url: string;
-      forks_count: number;
-      forks_url: string;
-    }) => {
+  const userReposFiltered: IRepo[] = userRepos.map(
+    (repo: IGithubApiResponseRepo) => {
       return {
-        contents_url: repo["contents_url"].replace("{+path}", ""),
         name: repo["name"],
-        url: repo["html_url"],
-        forks_count: repo["forks_count"],
-        forks_url: repo["forks_url"],
+        link: repo["html_url"],
+        fetchContentsURL: repo["contents_url"].replace("{+path}", ""),
+        forksCount: repo["forks_count"],
+        fetchForksURL: repo["forks_url"],
       };
     }
   );
@@ -57,10 +68,34 @@ async function loadRepos(user: string): Promise<number | undefined> {
 </script>
 
 <template>
-  <h2>userFound: {{ userFound }} and hasRepos: {{ hasRepos }}</h2>
   <h2 v-if="!userFound">User Not Found.</h2>
   <h2 v-if="!hasRepos && userFound">No Repos</h2>
-  <h2 v-if="userFound && hasRepos">found repos</h2>
+  <ul v-if="userFound && hasRepos">
+    <li v-for="repo in repos">
+      <RepoCard
+        v-bind:name="repo.name"
+        v-bind:link="repo.link"
+        v-bind:fetchContentsURL="repo.fetchContentsURL"
+        v-bind:forksCount="repo.forksCount"
+        v-bind:fetchForksURL="repo.fetchForksURL"
+      ></RepoCard>
+    </li>
+  </ul>
 </template>
 
-<style scoped></style>
+<style scoped>
+ul {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2rem;
+  margin: 2rem;
+}
+li {
+  margin: 0;
+  height: 100%;
+}
+repo-card {
+  display: block;
+  height: 100%;
+}
+</style>

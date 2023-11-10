@@ -1,8 +1,35 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import router from "../router.ts";
+import { ref, Ref } from "vue";
 
-const searchedUser = ref("");
+const props = defineProps<{
+  name: string;
+  link: string;
+  fetchContentsURL: string;
+  forksCount: number;
+  fetchForksURL: string;
+}>();
+
+const repoHasForks: boolean = props.forksCount > 0;
+const showForksButtonEnabled: Ref<boolean> = ref(repoHasForks);
+let showForksButtonText: string = repoHasForks
+  ? "show forks"
+  : "no forks found";
+
+async function showForks() {
+  const routeToManifest: string = `${props.fetchContentsURL}.manifest.json`;
+  const manifestReponse: Response = await fetch(routeToManifest);
+  if (!manifestReponse.ok) {
+    showForksButtonEnabled.value = false;
+    showForksButtonText = "no .manifest.json";
+    return 1;
+  }
+
+  const manifestBase64: string = (await manifestReponse.json()).content;
+  const manifest = JSON.parse(atob(manifestBase64)); // TODO ADD TYPE SAFETY
+
+  console.log(manifest);
+  console.log(props.fetchForksURL);
+}
 </script>
 
 <template>
@@ -21,17 +48,24 @@ const searchedUser = ref("");
   <div class="card horizontal">
     <div class="card-stacked">
       <div class="card-content">
-        <h3></h3>
+        <h3>{{ name }}</h3>
       </div>
       <div class="card-action">
-        <button id="button--forks" class="blue-text text-lighten-2">
-          Show forks
-        </button>
-        <p>|</p>
-        <a href="#" id="link--gh" class="blue-text text-lighten-2">
+        <a v-bind:href="link" class="blue-text text-lighten-2">
           Show On Github
         </a>
-        <p id="forks-count"></p>
+        <p>|</p>
+        <button
+          @click="showForks"
+          v-if="showForksButtonEnabled"
+          class="blue-text text-lighten-2"
+        >
+          {{ showForksButtonText }}
+        </button>
+        <span v-if="!showForksButtonEnabled" class="blue-text text-lighten-2">
+          {{ showForksButtonText }}
+        </span>
+        <p id="forks-count">{{ forksCount }}</p>
       </div>
     </div>
   </div>
@@ -76,6 +110,10 @@ button {
 }
 button:focus {
   background-color: unset;
+}
+span {
+  text-transform: uppercase;
+  cursor: not-allowed;
 }
 </style>
 ../index.ts
