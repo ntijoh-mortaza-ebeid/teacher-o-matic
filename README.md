@@ -1,7 +1,14 @@
-# teacher-o-vue
+# teacher-vue-matic
 Teacher-o-matic ported to vue
 
-## how to run
-run `cd backend && bundle && cd ../frontend && yarn`
-in one tab in backend directory run `rerun rackup`
-in another tab in frontend directory run `yarn run dev`
+## frontend
+change directory `cd frontend`
+install dependencies `yarn install`
+compiles and hot-reloads frontend for development `yarn run dev`
+compiles frontend for release `yarn run build`
+
+## backend
+change directory `cd backend`
+install dependecies `bundle install`
+run backend with hot-reload for development `rerun rackup`
+run backend `rackup`
