@@ -4,7 +4,7 @@ import { IManifest } from "../interfaces/IManifest";
 import { IAssignmentTest } from "../interfaces/IAssingmentTest";
 import useAssigemntStore from "../stores/AssignmentStore";
 
-interface IGithubApiResponseFork {
+interface IGithubApiForkResponse {
   id: number;
   contents_url: string;
   html_url: string;
@@ -42,10 +42,10 @@ async function loadForks(): Promise<number> {
     return 1;
   }
 
-  const repoForks: IGithubApiResponseFork[] = await forksResponse.json();
+  const repoForks: IGithubApiForkResponse[] = await forksResponse.json();
 
   const forkCardsInfoPromises: Promise<IForkCardInfo>[] = repoForks.map(
-    async (fork: IGithubApiResponseFork) => {
+    async (fork: IGithubApiForkResponse) => {
       const assignmentCodeURL: string = fork.contents_url.replace(
         "{+path}",
         manifest.filePath
