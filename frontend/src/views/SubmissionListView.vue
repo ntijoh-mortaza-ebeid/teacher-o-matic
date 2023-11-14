@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, Ref } from "vue";
-import { IManifest } from "../interfaces/IManifest";
+import { IManifest } from "../interfaces/IManifest.js";
 import { IAssignmentTest } from "../interfaces/IAssignmentTest.js";
-import useAssigemntStore from "../stores/AssignmentStore";
+import useAssigemntStore from "../stores/AssignmentStore.js";
 
 interface IGithubApiForkResponse {
   id: number;
@@ -15,8 +15,8 @@ interface IForkCardInfo {
   id: number;
   name: string;
   link: string;
-  assignmentCode: string;
-  assignmentCodeFound: boolean;
+  submissionCode: string;
+  submissionCodeFound: boolean;
   functionName: string;
   tests: IAssignmentTest[];
 }
@@ -46,24 +46,24 @@ async function loadForks(): Promise<number> {
 
   const forkCardsInfoPromises: Promise<IForkCardInfo>[] = repoForks.map(
     async (fork: IGithubApiForkResponse) => {
-      const assignmentCodeURL: string = fork.contents_url.replace(
+      const submissionCodeURL: string = fork.contents_url.replace(
         "{+path}",
         manifest.filePath
       );
 
-      const assignmentCodeReponse: Response = await fetch(assignmentCodeURL);
-      const assignmentCodeFound: boolean = assignmentCodeReponse.status === 200;
+      const submissionCodeReponse: Response = await fetch(submissionCodeURL);
+      const submissionCodeFound: boolean = submissionCodeReponse.status === 200;
 
-      const assignmentCode: string = assignmentCodeFound
-        ? atob((await assignmentCodeReponse.json()).content)
+      const submissionCode: string = submissionCodeFound
+        ? atob((await submissionCodeReponse.json()).content)
         : "File specified in .manifest.json not found";
 
       return {
         id: fork.id,
         name: fork.name,
         link: fork.html_url,
-        assignmentCode: assignmentCode,
-        assignmentCodeFound: assignmentCodeFound,
+        submissionCode: submissionCode,
+        submissionCodeFound: submissionCodeFound,
         functionName: manifest.functionName,
         tests: manifest.tests,
       };
