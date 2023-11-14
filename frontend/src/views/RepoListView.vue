@@ -33,7 +33,7 @@ router.beforeEach((to) => {
   loadRepos(searchedUser);
 });
 
-async function loadRepos(user: string): Promise<number | undefined> {
+async function loadRepos(user: string): Promise<number> {
   // fetch repos for user
   const userReposResult: Response = await fetch(
     `https://api.github.com/users/${user}/repos`
@@ -64,6 +64,8 @@ async function loadRepos(user: string): Promise<number | undefined> {
   userFound.value = true;
   hasRepos.value = true;
   repos.value = userReposFiltered;
+
+  return 0;
 }
 </script>
 

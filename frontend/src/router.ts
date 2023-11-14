@@ -6,7 +6,7 @@ import ForkList from "./views/ForkListView.vue";
 const routes = [
   { path: "/", component: Home },
   { path: "/users/:user/repos", component: RepoList },
-  { path: "/forklist", component: ForkList },
+  { path: "/repos/:repo/forks", component: ForkList },
 ];
 
 const router = createRouter({

@@ -40,6 +40,7 @@ async function showForks(): Promise<number> {
 
   assignmentStore.setManifest(manifest);
   assignmentStore.setForksURL(props.fetchForksURL);
+  router.push(`/repos/${props.name}/forks`);
 
   return 0;
 }

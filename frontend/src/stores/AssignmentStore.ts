@@ -25,6 +25,7 @@ const useAssigemntStore = defineStore("AssigemntStore", {
     getManifest(): IManifest {
       return this.manifest;
     },
+    // TODO add repo name to be able to check if url and assingment repo name matches
   },
 });
 
