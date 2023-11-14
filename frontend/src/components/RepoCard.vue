@@ -8,6 +8,7 @@ import { getManifest } from "../util";
 const assignmentStore = useAssigemntStore();
 
 const props = defineProps<{
+  owner: string;
   name: string;
   link: string;
   fetchContentsURL: string;
@@ -37,7 +38,7 @@ async function showForks(): Promise<void> {
         const manifest: IManifest = getManifestReturn.manifest;
         assignmentStore.setManifest(manifest);
         assignmentStore.setForksURL(props.fetchForksURL);
-        router.push(`/repos/${props.name}/forks`);
+        router.push(`/repos/${props.owner}/${props.name}/forks`);
       }
     }
   );

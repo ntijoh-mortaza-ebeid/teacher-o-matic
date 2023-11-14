@@ -5,6 +5,7 @@ import { ref, Ref } from "vue";
 import RepoCard from "../components/RepoCard.vue";
 
 interface IRepo {
+  owner: string;
   name: string;
   link: string;
   fetchContentsURL: string;
@@ -33,10 +34,10 @@ router.beforeEach((to) => {
   loadRepos(searchedUser);
 });
 
-async function loadRepos(user: string): Promise<number> {
+async function loadRepos(owner: string): Promise<number> {
   // fetch repos for user
   const userReposResult: Response = await fetch(
-    `https://api.github.com/users/${user}/repos`
+    `https://api.github.com/users/${owner}/repos`
   );
   if (!userReposResult.ok) {
     userFound.value = false;
@@ -52,6 +53,7 @@ async function loadRepos(user: string): Promise<number> {
   const userReposFiltered: IRepo[] = userRepos.map(
     (repo: IGithubApiRepoResponse) => {
       return {
+        owner: owner,
         name: repo["name"],
         link: repo["html_url"],
         fetchContentsURL: repo["contents_url"].replace("{+path}", ""),
@@ -75,6 +77,7 @@ async function loadRepos(user: string): Promise<number> {
   <ul v-if="userFound && hasRepos">
     <li v-for="repo in repos">
       <RepoCard
+        v-bind:owner="repo.owner"
         v-bind:name="repo.name"
         v-bind:link="repo.link"
         v-bind:fetchContentsURL="repo.fetchContentsURL"
