@@ -3,6 +3,7 @@ import { ref, Ref } from "vue";
 import { IManifest } from "../interfaces/IManifest";
 import useAssigemntStore from "../stores/AssignmentStore";
 import router from "../router";
+import { getManifest } from "../util";
 
 const assignmentStore = useAssigemntStore();
 
@@ -26,23 +27,20 @@ router.beforeEach(() => {
   showForksButtonText = repoHasForks ? "show forks" : "no forks found";
 });
 
-async function showForks(): Promise<number> {
-  const routeToManifest: string = `${props.fetchContentsURL}.manifest.json`;
-  const manifestReponse: Response = await fetch(routeToManifest);
-  if (!manifestReponse.ok) {
-    showForksButtonEnabled.value = false;
-    showForksButtonText = "no .manifest.json";
-    return 1;
-  }
-
-  const manifestBase64: string = (await manifestReponse.json()).content;
-  const manifest: IManifest = JSON.parse(atob(manifestBase64));
-
-  assignmentStore.setManifest(manifest);
-  assignmentStore.setForksURL(props.fetchForksURL);
-  router.push(`/repos/${props.name}/forks`);
-
-  return 0;
+async function showForks(): Promise<void> {
+  getManifest(props.fetchContentsURL).then(
+    (getManifestReturn: { ok: boolean; manifest: IManifest | null }) => {
+      if (!getManifestReturn.ok || getManifestReturn.manifest === null) {
+        showForksButtonEnabled.value = false;
+        showForksButtonText = "no .manifest.json";
+      } else {
+        const manifest: IManifest = getManifestReturn.manifest;
+        assignmentStore.setManifest(manifest);
+        assignmentStore.setForksURL(props.fetchForksURL);
+        router.push(`/repos/${props.name}/forks`);
+      }
+    }
+  );
 }
 </script>
 
