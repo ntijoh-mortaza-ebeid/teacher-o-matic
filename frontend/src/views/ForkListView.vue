@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, Ref } from "vue";
 import { IManifest } from "../interfaces/IManifest";
-import { IAssignmentTest } from "../interfaces/IAssingmentTest";
+import { IAssignmentTest } from "../interfaces/IAssignmentTest.js";
 import useAssigemntStore from "../stores/AssignmentStore";
 
 interface IGithubApiForkResponse {
@@ -33,10 +33,10 @@ loadForks();
 // TODO make loadforks run when changing url
 
 async function loadForks(): Promise<number> {
-  const forksURL: string = assignmentStore.getFetchForksURL;
+  const fetchForksURL: string = assignmentStore.getFetchForksURL;
   const manifest: IManifest = assignmentStore.getManifest;
 
-  const forksResponse: Response = await fetch(forksURL);
+  const forksResponse: Response = await fetch(fetchForksURL);
   if (!forksResponse.ok) {
     // TODO error handling if repo has no forks
     return 1;
@@ -82,3 +82,4 @@ async function loadForks(): Promise<number> {
 <template></template>
 
 <style scoped></style>
+../interfaces/IAssignmentTest
