@@ -17,28 +17,30 @@ const props = defineProps<{
 }>();
 
 let repoHasForks: boolean = props.forksCount > 0;
-const showForksButtonEnabled: Ref<boolean> = ref(repoHasForks);
-let showForksButtonText: string = repoHasForks
-  ? "show forks"
-  : "no forks found";
+const showSubmissionsButtonEnabled: Ref<boolean> = ref(repoHasForks);
+let showSubmissionsButtonText: string = repoHasForks
+  ? "show submissions"
+  : "no forks for repo found";
 
 router.beforeEach(() => {
   repoHasForks = props.forksCount > 0;
-  showForksButtonEnabled.value = repoHasForks;
-  showForksButtonText = repoHasForks ? "show forks" : "no forks found";
+  showSubmissionsButtonEnabled.value = repoHasForks;
+  showSubmissionsButtonText = repoHasForks
+    ? "show submissions"
+    : "no forks for repo found";
 });
 
-async function showForks(): Promise<void> {
+async function showSubmissions(): Promise<void> {
   getManifest(props.fetchContentsURL).then(
     (getManifestReturn: { ok: boolean; manifest: IManifest | null }) => {
       if (!getManifestReturn.ok || getManifestReturn.manifest === null) {
-        showForksButtonEnabled.value = false;
-        showForksButtonText = "no .manifest.json";
+        showSubmissionsButtonEnabled.value = false;
+        showSubmissionsButtonText = "no .manifest.json";
       } else {
         const manifest: IManifest = getManifestReturn.manifest;
         assignmentStore.setManifest(manifest);
-        assignmentStore.setForksURL(props.fetchForksURL);
-        router.push(`/repos/${props.owner}/${props.name}/forks`);
+        assignmentStore.setFetchForksURL(props.fetchForksURL);
+        router.push(`/repos/${props.owner}/${props.name}/submissions`);
       }
     }
   );
@@ -69,14 +71,14 @@ async function showForks(): Promise<void> {
         </a>
         <p>|</p>
         <button
-          @click="showForks"
-          v-if="showForksButtonEnabled"
+          @click="showSubmissions"
+          v-if="showSubmissionsButtonEnabled"
           class="blue-text text-lighten-2"
         >
-          {{ showForksButtonText }}
+          {{ showSubmissionsButtonText }}
         </button>
-        <span v-if="!showForksButtonEnabled" class="blue-text text-lighten-2">
-          {{ showForksButtonText }}
+        <span v-if="!showSubmissionsButtonEnabled" class="blue-text text-lighten-2">
+          {{ showSubmissionsButtonText }}
         </span>
         <p id="forks-count">{{ forksCount }}</p>
       </div>

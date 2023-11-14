@@ -13,7 +13,7 @@ interface IRepo {
   fetchForksURL: string;
 }
 
-interface IGithubApiRepoResponse {
+interface IGithubApiRepo {
   contents_url: string;
   name: string;
   html_url: string;
@@ -44,14 +44,14 @@ async function loadRepos(owner: string): Promise<number> {
     return 1;
   }
 
-  const userRepos: IGithubApiRepoResponse[] = await userReposResult.json();
+  const userRepos: IGithubApiRepo[] = await userReposResult.json();
   if (userRepos.length === 0) {
     hasRepos.value = false;
     return 1;
   }
 
   const userReposFiltered: IRepo[] = userRepos.map(
-    (repo: IGithubApiRepoResponse) => {
+    (repo: IGithubApiRepo) => {
       return {
         owner: owner,
         name: repo["name"],

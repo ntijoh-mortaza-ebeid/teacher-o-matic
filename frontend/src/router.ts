@@ -6,7 +6,7 @@ import SubmissionListView from "./views/SubmissionListView.vue";
 const routes = [
   { path: "/", component: Home },
   { path: "/users/:user/repos", component: RepoList },
-  { path: "/repos/:owner/:repo/forks", component: SubmissionListView },
+  { path: "/repos/:owner/:repo/submissions", component: SubmissionListView },
 ];
 
 const router = createRouter({

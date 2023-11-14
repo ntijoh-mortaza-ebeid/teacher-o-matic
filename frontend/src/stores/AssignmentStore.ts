@@ -11,7 +11,7 @@ const useAssigemntStore = defineStore("AssigemntStore", {
     return { fetchForksURL: "", manifest: {} } as IAssigment;
   },
   actions: {
-    setForksURL(fetchForksURL: string): void {
+    setFetchForksURL(fetchForksURL: string): void {
       this.fetchForksURL = fetchForksURL;
     },
     setManifest(manifest: IManifest): void {

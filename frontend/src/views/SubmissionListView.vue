@@ -4,14 +4,14 @@ import { IManifest } from "../interfaces/IManifest.js";
 import { IAssignmentTest } from "../interfaces/IAssignmentTest.js";
 import useAssigemntStore from "../stores/AssignmentStore.js";
 
-interface IGithubApiForkResponse {
+interface IGithubApiFork {
   id: number;
   contents_url: string;
   html_url: string;
   name: string;
 }
 
-interface IForkCardInfo {
+interface ISubmissionCard {
   id: number;
   name: string;
   link: string;
@@ -26,13 +26,13 @@ const assignmentStore = useAssigemntStore();
 // TODO if assignment store is empty (get forks info from url)
 // TODO if url does not match repo name in assignmentStore then reload assignmentStore data
 
-const forkCards: Ref<IForkCardInfo[]> = ref([]);
+const submissionCards: Ref<ISubmissionCard[]> = ref([]);
 
-loadForks();
+loadSubmissions();
 
-// TODO make loadforks run when changing url
+// TODO make loadSubmissions run when changing url
 
-async function loadForks(): Promise<number> {
+async function loadSubmissions(): Promise<number> {
   const fetchForksURL: string = assignmentStore.getFetchForksURL;
   const manifest: IManifest = assignmentStore.getManifest;
 
@@ -42,10 +42,10 @@ async function loadForks(): Promise<number> {
     return 1;
   }
 
-  const repoForks: IGithubApiForkResponse[] = await forksResponse.json();
+  const forks: IGithubApiFork[] = await forksResponse.json();
 
-  const forkCardsInfoPromises: Promise<IForkCardInfo>[] = repoForks.map(
-    async (fork: IGithubApiForkResponse) => {
+  const submissionCardsPromises: Promise<ISubmissionCard>[] = forks.map(
+    async (fork: IGithubApiFork) => {
       const submissionCodeURL: string = fork.contents_url.replace(
         "{+path}",
         manifest.filePath
@@ -70,9 +70,9 @@ async function loadForks(): Promise<number> {
     }
   );
 
-  Promise.all(forkCardsInfoPromises).then((forkCardsInfo) => {
-    forkCards.value = forkCardsInfo;
-    console.log(forkCards.value);
+  Promise.all(submissionCardsPromises).then((loadedSubmissionCards) => {
+    submissionCards.value = loadedSubmissionCards;
+    console.log(submissionCards.value);
   });
 
   return 0;
